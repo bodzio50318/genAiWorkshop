@@ -9,13 +9,15 @@ from model import device
 ################
 inputFile='shakespeare'
 max_iters = 4000
+saved_model_name = 'gpt_'+inputFile+str(max_iters)+'.pth'
+# mode='train'
+mode='load'
 # learning params
 
 eval_interval = 500
 eval_iters = 200
 learning_rate = 3e-4
 
-# wget https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt
 with open(inputFile+'.txt', 'r', encoding='utf-8') as f:
     text = f.read()
 
@@ -61,36 +63,40 @@ def estimate_loss():
     model.train()
     return out
 
-
-
 model = GPTLanguageModel(vocab_size)
-m = model.to(device)
-# print the number of parameters in the model
-print(sum(p.numel() for p in m.parameters()) / 1e6, 'M parameters')
+if(mode=='train'):
+    m = model.to(device)
+    # print the number of parameters in the model
+    print(sum(p.numel() for p in m.parameters()) / 1e6, 'M parameters')
 
-# create a PyTorch optimizer
-optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
-print(device)
-for iter in range(max_iters):
+    # create a PyTorch optimizer
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+    print(device)
+    for iter in range(max_iters):
 
-    # every once in a while evaluate the loss on train and val sets
-    if iter % eval_interval == 0 or iter == max_iters - 1:
-        losses = estimate_loss()
-        print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
+        # every once in a while evaluate the loss on train and val sets
+        if iter % eval_interval == 0 or iter == max_iters - 1:
+            losses = estimate_loss()
+            print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
 
-    # sample a batch of data
-    xb, yb = get_batch('train')
+        # sample a batch of data
+        xb, yb = get_batch('train')
 
-    # evaluate the loss
-    logits, loss = model(xb, yb)
-    optimizer.zero_grad(set_to_none=True)
-    loss.backward()
-    optimizer.step()
+        # evaluate the loss
+        logits, loss = model(xb, yb)
+        optimizer.zero_grad(set_to_none=True)
+        loss.backward()
+        optimizer.step()
 
 
-# Save the model
-torch.save(model.state_dict(), 'gpt_'+inputFile+str(max_iters)+'.pth')
+    # Save the model
+    torch.save(model.state_dict(), saved_model_name)
+else:
+    model = GPTLanguageModel(vocab_size)  # Make sure to instantiate the model with the same parameters
+    model.load_state_dict(torch.load(saved_model_name))
+    model = model.to(device)
+    model.eval()  # Make sure to call .eval() if you're using the model for inference
+
 # generate from the model
 context = torch.zeros((1, 1), dtype=torch.long, device=device)
 print(decode(model.generate(context, max_new_tokens=500)[0].tolist()))
-# open('more.txt', 'w').write(decode(m.generate(context, max_new_tokens=10000)[0].tolist()))
