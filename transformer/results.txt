@@ -1,0 +1,1 @@
+Pretrained polishBooks: step 4999: train loss 1.4111, val loss 1.4315
