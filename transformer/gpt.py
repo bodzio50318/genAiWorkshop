@@ -21,16 +21,16 @@ def estimate_loss():
     return out
 
 # Run time parameters
-input_file_name = 'panTadeusz.txt'
-model_folder = 'panTadeusz_model'
-max_iters = 500
+input_file_name = 'shakespeare.txt'
+model_folder = 'shakespeare'
+max_iters = 4000
 saved_model_name = model_folder+'.pth'
 mode = 'train'
 # mode='load'
 # learning params
 eval_interval = 500
 eval_iters = 200
-learning_rate = 3e-5
+learning_rate = 3e-4
 ################
 
 
