@@ -1,6 +1,4 @@
 import requests
-import wget
-
 
 def fetchListOfLinks(url):
     try:
