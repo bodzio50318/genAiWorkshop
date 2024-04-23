@@ -23,10 +23,23 @@ def estimate_loss():
 
 
 # Run time parameters
+# input_file_name = 'panTadeusz.txt'
 input_file_name = 'shakespeare.txt'
+
+# model trained on all polish lectures
+# model_folder = 'polishBooks_model'
+# model first trained on all books then fine-tuned on panTadeusz
+# model_folder = 'panTadeusz_model'
 model_folder = 'shakespeare'
+
+
+saved_model_name = 'shakespeare.pth'
+
+
 max_iters = 4000
-saved_model_name = model_folder + '.pth'
+# saved_model_name = 'panTadeusz_model.pth'
+
+
 # mode = 'train'
 mode='load'
 # learning params
@@ -118,5 +131,7 @@ if mode == 'train':
     saveModel(model, vocabulary, model_folder, saved_model_name)
 
 # generate from the model
-context = torch.zeros((1, 1), dtype=torch.long, device=device)
-print(decode(model.generate(context, max_new_tokens=500)[0].tolist()))
+while True:
+    context = torch.zeros((1, 1), dtype=torch.long, device=device)
+    print(decode(model.generate(context, max_new_tokens=500)[0].tolist()))
+    if mode=='train': break
