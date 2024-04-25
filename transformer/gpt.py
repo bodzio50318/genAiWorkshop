@@ -23,21 +23,22 @@ def estimate_loss():
 
 
 # Run time parameters
-# input_file_name = 'panTadeusz.txt'
-input_file_name = 'shakespeare.txt'
+input_file_name = 'panTadeusz.txt'
+# input_file_name = 'shakespeare.txt'
 
-# model trained on all polish lectures
-# model_folder = 'polishBooks_model'
+
+model_folder = 'polishBooks_model'
 # model first trained on all books then fine-tuned on panTadeusz
 # model_folder = 'panTadeusz_model'
-model_folder = 'shakespeare'
+# model_folder = 'shakespeare'
 
+# saved_model_name = 'shakespeare.pth'
+saved_model_name = 'panTadeusz_model.pth'
 
-saved_model_name = 'shakespeare.pth'
 
 
 max_iters = 4000
-# saved_model_name = 'panTadeusz_model.pth'
+
 
 
 # mode = 'train'
